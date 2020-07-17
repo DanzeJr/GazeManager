@@ -30,7 +30,7 @@ namespace GazeManager.Controllers
             if (pageIndex >= 0 && pageSize > 0)
             {
                 int totalPages = await _context.Category.CountAsync();
-                categories = await _context.Category.Skip(pageSize * pageIndex).Take(pageSize).ToListAsync();
+                categories = await _context.Category.Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToListAsync();
                 return Ok(new Pagination<Category>
                 {
                     TotalPages = totalPages,

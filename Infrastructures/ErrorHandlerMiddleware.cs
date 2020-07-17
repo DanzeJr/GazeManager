@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -19,7 +20,7 @@ namespace GazeManager.Infrastructures
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext, IHostingEnvironment env)
+        public async Task InvokeAsync(HttpContext httpContext, IWebHostEnvironment env)
         {
             try
             {
@@ -32,7 +33,7 @@ namespace GazeManager.Infrastructures
                 var error = new
                 {
                     Code = StatusCodes.Status500InternalServerError,
-                    Message = env.IsDevelopment() ? ex.Message : "Error occurs"
+                    Message = env.IsDevelopment() ? ex.StackTrace : ex.Message//"Error occurs"
                 };
 
                 httpContext.Response.ContentType = "application/json";
