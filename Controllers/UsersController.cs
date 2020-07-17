@@ -51,6 +51,21 @@ namespace GazeManager.Controllers
             return user;
         }
 
+        [HttpGet("profile")]
+        [Authorize(Roles = Role.Customer)]
+        public async Task<ActionResult<User>> GetProfile()
+        {
+            var id = User.Claims.FirstOrDefault(x => x.Type == "gazeId")?.Value;
+            var user = await _context.User.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return user;
+        }
+
         // PUT: api/Users/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
