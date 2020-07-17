@@ -37,12 +37,8 @@ namespace GazeManager.Models
 
         public List<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
 
-
-
-
-
         public static readonly Faker<Product> Faker = new Faker<Product>().StrictMode(false)
-            .RuleFor(x => x.Color, f => f.Commerce.Color())
+            .RuleFor(x => x.Color, f => f.Commerce.Color().ToUpperInvariant())
             .RuleFor(x => x.Size, f => f.Random.Number(0, 2))
             .RuleFor(x => x.Status, f => f.Random.Bool(0.8f) ? 0 : f.Random.Number(1, 2))
             .RuleFor(x => x.Description, f => f.Lorem.Sentence())

@@ -21,7 +21,7 @@ namespace GazeManager.Models
         public List<ProductCategory> ProductCategories { get; set; }
 
         public static readonly Faker<Category> Faker = new Faker<Category>().StrictMode(false)
-            .RuleFor(x => x.Color, f => f.Commerce.Color())
+            .RuleFor(x => x.Color, f => f.Internet.Color())
             .RuleFor(x => x.Brief, f => f.Lorem.Paragraph(1))
             .RuleFor(x => x.Icon, f => f.Image.LoremFlickrUrl(keywords: "category", matchAllKeywords: true))
             .RuleFor(x => x.Name, f => f.Commerce.Categories(1)[0])
