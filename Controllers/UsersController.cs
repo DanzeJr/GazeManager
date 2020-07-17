@@ -115,7 +115,7 @@ namespace GazeManager.Controllers
         [Authorize]
         public async Task<ActionResult<User>> Register()
         {
-            var token = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(Request.Headers[HeaderNames.Authorization]);
+            var token = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(Request.Headers[HeaderNames.Authorization].ToString().Substring("Bearer ".Length));
             var fireBaseUser = await FirebaseAuth.DefaultInstance.GetUserAsync(token.Uid);
             var user = await _context.User.FirstOrDefaultAsync(x => x.Email == fireBaseUser.Email);
             if (user != null)
