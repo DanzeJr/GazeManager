@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
 using FirebaseAdmin;
 using GazeManager.Infrastructures;
 using GazeManager.Services;
@@ -87,9 +85,10 @@ namespace GazeManager
 
             services.AddControllers()
                 .AddNewtonsoftJson(options =>
-                    {
-                        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                    });
+                {
+                    options.SerializerSettings.DateFormatString = "MMM dd, yyyy HH:mm:ss";
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                });
 
             services.AddSwaggerGen(options =>
             {
