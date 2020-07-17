@@ -127,6 +127,7 @@ namespace GazeManager.Controllers
                 configuration.CreatedDate = DateTime.Now;
 
                 await _context.Configuration.AddAsync(configuration);
+                await _context.SaveChangesAsync();
 
                 return CreatedAtAction(nameof(Initialize), null, configuration);
             }
