@@ -149,7 +149,6 @@ namespace GazeManager.Controllers
 
                 await _context.Product.AddRangeAsync(products);
                 await _context.SaveChangesAsync();
-                products = await _context.Product.ToListAsync();
 
                 return CreatedAtAction(nameof(Generate), null, products);
             }
