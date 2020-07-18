@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GazeManager.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200717142709_Initial")]
+    [Migration("20200718073519_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -113,11 +113,17 @@ namespace GazeManager.Migrations
                     b.Property<string>("AppVersion")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Device")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InstanceId")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("OsVersion")
                         .HasColumnType("nvarchar(max)");

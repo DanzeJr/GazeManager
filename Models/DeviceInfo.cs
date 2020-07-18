@@ -1,4 +1,6 @@
-﻿namespace GazeManager.Models
+﻿using System;
+
+namespace GazeManager.Models
 {
     public class DeviceInfo
     {
@@ -17,5 +19,9 @@
         public long? UserId { get; set; }
 
         public User User { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
+        public DateTime LastUpdate { get; set; }
     }
 }

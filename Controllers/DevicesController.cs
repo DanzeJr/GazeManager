@@ -80,10 +80,27 @@ namespace GazeManager.Controllers
         [HttpPost]
         public async Task<ActionResult<DeviceInfo>> PostDeviceInfo(DeviceInfo deviceInfo)
         {
-            _context.DeviceInfo.Add(deviceInfo);
+            deviceInfo.CreatedDate = DateTime.Now;
+            deviceInfo.LastUpdate = DateTime.Now;
+            var id = User?.Claims?.FirstOrDefault(x => x.Type == "gazeId")?.Value;
+            if (id != null)
+            {
+                deviceInfo.UserId = long.Parse(id);
+                var userDevice = await _context.DeviceInfo.Where(x => x.UserId == deviceInfo.UserId).OrderByDescending(x => x.CreatedDate).FirstOrDefaultAsync();
+                if (deviceInfo.InstanceId.Equals(userDevice.InstanceId))
+                {
+                    deviceInfo.CreatedDate = userDevice.CreatedDate;
+                    _context.DeviceInfo.Update(deviceInfo);
+                    await _context.SaveChangesAsync();
+
+                    return Ok(deviceInfo);
+                }
+            }
+
+            await _context.DeviceInfo.AddAsync(deviceInfo);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDeviceInfo", new { id = deviceInfo.Id }, deviceInfo);
+            return CreatedAtAction(nameof(PostDeviceInfo), null, deviceInfo);
         }
 
         // DELETE: api/Devices/5

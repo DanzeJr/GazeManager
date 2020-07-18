@@ -168,7 +168,9 @@ namespace GazeManager.Migrations
                     AppVersion = table.Column<string>(nullable: true),
                     InstanceId = table.Column<string>(nullable: true),
                     RegId = table.Column<string>(nullable: true),
-                    UserId = table.Column<long>(nullable: true)
+                    UserId = table.Column<long>(nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    LastUpdate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {

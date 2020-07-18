@@ -42,7 +42,7 @@ namespace GazeManager.Models
             .RuleFor(x => x.Size, f => f.Random.Number(0, 2))
             .RuleFor(x => x.Status, f => f.Random.Bool(0.8f) ? 0 : f.Random.Number(1, 2))
             .RuleFor(x => x.Description, f => f.Lorem.Sentence())
-            .RuleFor(x => x.Image, f => f.Image.LoremFlickrUrl(keywords: "sunglass, eyeglass", matchAllKeywords: true))
+            .RuleFor(x => x.Image, f => f.Image.LoremFlickrUrl(keywords: "sunglass, eyeglass", matchAllKeywords: true, width: 1000, height: 1000))
             .RuleFor(x => x.Price, f => f.Random.Decimal(2, 100))
             .RuleFor(x => x.Discount, f => f.Random.Decimal(2, 100))
             .RuleFor(x => x.Stock, (f, c) => c.Status != 0 ? 0 : f.Random.Number(1, 300))

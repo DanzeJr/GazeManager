@@ -111,11 +111,17 @@ namespace GazeManager.Migrations
                     b.Property<string>("AppVersion")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Device")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InstanceId")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("OsVersion")
                         .HasColumnType("nvarchar(max)");

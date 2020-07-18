@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GazeManager.Infrastructures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -120,19 +121,11 @@ namespace GazeManager.Controllers
         [HttpGet("init")]
         public async Task<ActionResult<Configuration>> Initialize()
         {
-            var configuration = await _context.Configuration.OrderByDescending(x => x.CreatedDate).FirstOrDefaultAsync();
-            if (configuration == null)
-            {
-                configuration = _configuration.GetSection("AppConfig:DefaultConfiguration").Get<Configuration>();
-                configuration.CreatedDate = DateTime.Now;
+            await _context.Database.EnsureDeletedAsync();
 
-                await _context.Configuration.AddAsync(configuration);
-                await _context.SaveChangesAsync();
+            await DatabaseSeeder.InitializeAsync(_context, _configuration);
 
-                return CreatedAtAction(nameof(Initialize), null, configuration);
-            }
-
-            return Ok(configuration);
+            return Ok();
         }
 
         private bool ConfigurationExists(long id)
