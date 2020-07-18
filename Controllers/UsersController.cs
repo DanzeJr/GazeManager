@@ -132,7 +132,7 @@ namespace GazeManager.Controllers
                 Role = Role.Customer
             };
 
-            await _context.User.AddAsync(user);
+            _context.User.Add(user);
             await _context.SaveChangesAsync();
 
             await FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(fireBaseUser.Uid, new Dictionary<string, object>

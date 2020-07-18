@@ -130,11 +130,11 @@ namespace GazeManager.Controllers
                 }
 
                 Faker faker = new Faker();
-                products = Product.Faker.Generate((faker.Random.Number(5, 100)));
+                products = Product.Faker.Generate((faker.Random.Number(5, 50)));
 
                 foreach (var product in products)
                 {
-                    for (int i = 0; i < faker.Random.Number(1, 5); i++)
+                    for (int i = 0; i < faker.Random.Number(1, categories.Count); i++)
                     {
                         if (i == 0 || faker.Random.Bool())
                         {
@@ -147,7 +147,7 @@ namespace GazeManager.Controllers
                     }
                 }
 
-                await _context.Product.AddRangeAsync(products);
+                _context.Product.AddRange(products);
                 await _context.SaveChangesAsync();
 
                 return CreatedAtAction(nameof(Generate), null, products);

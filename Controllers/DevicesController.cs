@@ -97,7 +97,7 @@ namespace GazeManager.Controllers
                 }
             }
 
-            await _context.DeviceInfo.AddAsync(deviceInfo);
+            _context.DeviceInfo.Add(deviceInfo);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(PostDeviceInfo), null, deviceInfo);

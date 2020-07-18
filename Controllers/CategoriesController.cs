@@ -126,7 +126,8 @@ namespace GazeManager.Controllers
             }
 
             categories = Category.Faker.Generate((new Faker()).Random.Number(1, 15));
-            await _context.Category.AddRangeAsync(categories);
+
+            _context.Category.AddRange(categories);
             await _context.SaveChangesAsync();
             categories = await _context.Category.ToListAsync();
 

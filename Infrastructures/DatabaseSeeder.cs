@@ -25,7 +25,7 @@ namespace GazeManager.Infrastructures
                 appConfig = configuration.GetSection("AppConfig:DefaultConfiguration").Get<Configuration>();
                 appConfig.CreatedDate = DateTime.Now;
 
-                await context.Configuration.AddAsync(appConfig);
+                context.Configuration.Add(appConfig);
                 await context.SaveChangesAsync();
             }
 
@@ -52,7 +52,7 @@ namespace GazeManager.Infrastructures
                 admin.Role = Role.Admin;
                 admin.CreatedDate = DateTime.Now;
 
-                await context.User.AddAsync(admin);
+                context.User.Add(admin);
                 await context.SaveChangesAsync();
 
                 await FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(user.Uid, new Dictionary<string, object>
