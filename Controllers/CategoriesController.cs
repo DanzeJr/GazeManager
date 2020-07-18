@@ -129,7 +129,6 @@ namespace GazeManager.Controllers
 
             _context.Category.AddRange(categories);
             await _context.SaveChangesAsync();
-            categories = await _context.Category.ToListAsync();
 
             return CreatedAtAction(nameof(Generate), null, categories);
         }

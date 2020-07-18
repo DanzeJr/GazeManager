@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using GazeManager.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,12 +17,16 @@ namespace GazeManager.Infrastructures
                 var context = services.GetService<AppDbContext>();
                 var configuration = services.GetService<IConfiguration>();
 
-                if (configuration.GetSection("AppConfig:Database:DeleteOnDeploy").Get<bool>())
+                if (configuration.GetSection("AppConfig:Database:Initialize").Get<bool>())
                 {
                     context.Database.EnsureDeleted();
-                }
 
-                await DatabaseSeeder.InitializeAsync(context, configuration);
+                    await DatabaseSeeder.InitializeAsync(context, configuration);
+                }
+                else
+                {
+                    context.Database.Migrate();
+                }
             }
 
             return host;

@@ -121,7 +121,7 @@ namespace GazeManager.Controllers
         [HttpGet("init")]
         public async Task<ActionResult<Configuration>> Initialize()
         {
-            await _context.Database.EnsureDeletedAsync();
+            _context.Database.EnsureDeleted();
 
             await DatabaseSeeder.InitializeAsync(_context, _configuration);
 
