@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GazeManager.Models
 {
@@ -17,15 +18,18 @@ namespace GazeManager.Models
 
         public string Avatar { get; set; }
 
-        public DateTime CreatedDate { get; set; }
+        [NotMapped]
+        public string Password { get; set; }
+
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         public string Role { get; set; }
 
-        public List<Cart> CartList { get; set; } = new List<Cart>();
+        public virtual List<CartItem> Cart { get; set; } = new List<CartItem>();
 
-        public List<Order> Orders { get; set; } = new List<Order>();
+        public virtual List<Order> Orders { get; set; } = new List<Order>();
 
-        public List<DeviceInfo> DeviceInfos { get; set; } = new List<DeviceInfo>();
+        public virtual List<DeviceInfo> Devices { get; set; } = new List<DeviceInfo>();
     }
 
     public class Role

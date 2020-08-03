@@ -20,8 +20,10 @@ namespace GazeManager.Models
 
         public User User { get; set; }
 
-        public DateTime CreatedDate { get; set; }
+        public int Status { get; set; }
 
-        public DateTime LastUpdate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+
+        public DateTime LastUpdate { get; set; } = DateTime.Now;
     }
 }

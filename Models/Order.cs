@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace GazeManager.Models
 {
@@ -33,9 +34,9 @@ namespace GazeManager.Models
 
         public string Comment { get; set; }
 
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        public List<ProductOrder> ProductOrders { get; set; } = new List<ProductOrder>();
+        public List<ProductOrder> Cart { get; set; } = new List<ProductOrder>();
 
     }
 

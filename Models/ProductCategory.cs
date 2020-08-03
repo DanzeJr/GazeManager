@@ -1,4 +1,6 @@
-﻿namespace GazeManager.Models
+﻿using System.Text.Json.Serialization;
+
+namespace GazeManager.Models
 {
     public class ProductCategory
     {
@@ -6,10 +8,12 @@
 
         public long ProductId { get; set; }
 
-        public Product Product { get; set; }
+        [JsonIgnore]
+        public virtual Product Product { get; set; }
 
         public long CategoryId { get; set; }
 
-        public Category Category { get; set; }
+        [JsonIgnore]
+        public virtual Category Category { get; set; }
     }
 }

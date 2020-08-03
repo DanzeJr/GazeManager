@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using Bogus;
+using Newtonsoft.Json;
 
 namespace GazeManager.Models
 {
@@ -16,9 +19,20 @@ namespace GazeManager.Models
 
         public string Color { get; set; }
 
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
 
+        [JsonIgnore]
         public List<ProductCategory> ProductCategories { get; set; }
+
+        [NotMapped]
+        public List<Product> Products
+        {
+            get { return ProductCategories?.Select(x =>
+            {
+                x.Product.ProductCategories = null;
+                return x.Product;
+            }).ToList(); }
+        }
 
         public static readonly Faker<Category> Faker = new Faker<Category>().StrictMode(false)
             .RuleFor(x => x.Color, f => f.Internet.Color())

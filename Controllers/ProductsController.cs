@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GazeManager.Models;
+using GazeManager.Models.Requests;
+using GazeManager.Models.Responses;
 using GazeManager.Services;
 
 namespace GazeManager.Controllers
@@ -24,21 +26,40 @@ namespace GazeManager.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public async Task<IActionResult> GetProduct(int pageIndex = -1, int pageSize = -1)
+        public async Task<IActionResult> GetProduct([FromQuery] FilterProduct request = null)
         {
+            IQueryable<Product> queryable;
             List<Product> products;
-            if (pageIndex >= 0 && pageSize > 0)
+
+            if (request?.CategoryId != null)
             {
-                int totalPages = await _context.Product.CountAsync();
-                products = await _context.Product.Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToListAsync();
+                queryable = _context.Product.Include(p => p.ProductOptions).Where(x => x.ProductCategories.Any(pc => pc.CategoryId == request.CategoryId));
+
+            }
+            else
+            {
+                queryable = _context.Product.Include(p => p.ProductOptions).AsQueryable();
+            }
+
+            if (!string.IsNullOrEmpty(request?.Search))
+            {
+                queryable = queryable.Where(x => EF.Functions.Like(x.Name, $"{request.Search}%"));
+            }
+
+            if (request?.PageIndex > 0 && request.PageSize > 0)
+            {
+                int? totalPages = await queryable.CountAsync();
+                queryable = queryable.Skip(request.PageSize.Value * (request.PageIndex.Value - 1)).Take(request.PageSize.Value);
+
+                products = await queryable.ToListAsync();
                 return Ok(new Pagination<Product>
                 {
-                    TotalPages = totalPages,
+                    TotalPages = totalPages.Value,
                     Data = products
                 });
             }
 
-            products = await _context.Product.ToListAsync();
+            products = await queryable.ToListAsync();
             return Ok(products);
         }
 
@@ -46,7 +67,12 @@ namespace GazeManager.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(long id)
         {
-            var product = await _context.Product.FindAsync(id);
+            var product = await _context.Product
+                .Include(p => p.ProductOptions)
+                .Include(x => x.ProductImages)
+                .Include(p => p.ProductCategories)
+                .ThenInclude(pg => pg.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null)
             {
@@ -54,6 +80,21 @@ namespace GazeManager.Controllers
             }
 
             return product;
+        }
+
+        [HttpGet("options/{id}")]
+        public async Task<ActionResult<ProductOption>> GetProductOption(long id)
+        {
+            var productOption = await _context.ProductOption
+                .Include(po => po.Product)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (productOption == null)
+            {
+                return NotFound();
+            }
+
+            return productOption;
         }
 
         // PUT: api/Products/5
@@ -145,9 +186,34 @@ namespace GazeManager.Controllers
                             });
                         }
                     }
-                }
 
-                _context.Product.AddRange(products);
+                    for (int i = 0; i < faker.Random.Number(1, 5); i++)
+                    {
+                        string color = faker.Commerce.Color().ToUpperInvariant();
+                        for (int j = 0; j < faker.Random.Number(1, 3); j++)
+                        {
+                            ProductOption option = ProductOption.Faker.Generate();
+                            option.Color = color;
+                            option.Size = j;
+                            product.ProductOptions.Add(option);
+                        }
+                    }
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        ProductImage productImage = new ProductImage
+                        {
+                            ProductId = product.Id,
+                            Name = faker.Image.LoremFlickrUrl(keywords: "sunglass, beauty", matchAllKeywords: true,
+                                width: 1000, height: 1000)
+                        };
+                        _context.ProductImage.Add(productImage);
+
+                        product.ProductImages.Add(productImage);
+                    }
+
+                    _context.Product.Add(product);
+                }
                 await _context.SaveChangesAsync();
 
                 return CreatedAtAction(nameof(Generate), null, products);

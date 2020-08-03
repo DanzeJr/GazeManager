@@ -40,6 +40,8 @@ namespace GazeManager
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration["AppConfig:Database:ConnectionString"]));
 
+            services.AddTransient<BlobService>();
+
             // Configure response for bad request
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -86,6 +88,7 @@ namespace GazeManager
             services.AddControllers()
                 .AddNewtonsoftJson(options =>
                 {
+                    options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
 
@@ -119,6 +122,8 @@ namespace GazeManager
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+
+                app.UseHttpsRedirection();
             }
 
             app.UseStaticFiles("/keys");
@@ -134,8 +139,6 @@ namespace GazeManager
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ecotioco API V1");
                 c.RoutePrefix = string.Empty;
             });
-
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 

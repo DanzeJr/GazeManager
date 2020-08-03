@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GazeManager.Models
+namespace GazeManager.Models.Responses
 {
     public class Pagination<T> where T : class
     {

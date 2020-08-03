@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GazeManager.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200718073519_Initial")]
+    [Migration("20200803003351_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace GazeManager.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("GazeManager.Models.Cart", b =>
+            modelBuilder.Entity("GazeManager.Models.CartItem", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -31,7 +31,7 @@ namespace GazeManager.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("ProductId")
+                    b.Property<long>("OptionId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Quantity")
@@ -42,7 +42,7 @@ namespace GazeManager.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("OptionId");
 
                     b.HasIndex("UserId");
 
@@ -89,6 +89,9 @@ namespace GazeManager.Migrations
                     b.Property<string>("MaxVersion")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("MinPasswordLength")
+                        .HasColumnType("int");
+
                     b.Property<int>("MinPremiumDeliveryDays")
                         .HasColumnType("int");
 
@@ -97,6 +100,12 @@ namespace GazeManager.Migrations
 
                     b.Property<string>("MinVersion")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("PremiumShippingFee")
+                        .HasColumnType("DECIMAL(18, 2)");
+
+                    b.Property<decimal>("StandardShippingFee")
+                        .HasColumnType("DECIMAL(18, 2)");
 
                     b.HasKey("Id");
 
@@ -131,6 +140,9 @@ namespace GazeManager.Migrations
                     b.Property<string>("RegId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<long?>("UserId")
                         .HasColumnType("bigint");
 
@@ -139,6 +151,77 @@ namespace GazeManager.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("DeviceInfo");
+                });
+
+            modelBuilder.Entity("GazeManager.Models.NewsInfo", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("BriefContent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FullContent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("News");
+                });
+
+            modelBuilder.Entity("GazeManager.Models.Notification", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ObjectId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notification");
                 });
 
             modelBuilder.Entity("GazeManager.Models.Order", b =>
@@ -198,17 +281,11 @@ namespace GazeManager.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Discount")
-                        .HasColumnType("DECIMAL(18, 2)");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -219,17 +296,8 @@ namespace GazeManager.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("DECIMAL(18, 2)");
-
-                    b.Property<int>("Size")
-                        .HasColumnType("int");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
-
-                    b.Property<long>("Stock")
-                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -278,6 +346,50 @@ namespace GazeManager.Migrations
                     b.ToTable("ProductImage");
                 });
 
+            modelBuilder.Entity("GazeManager.Models.ProductOption", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("DECIMAL(18, 2)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("DECIMAL(18, 2)");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Size")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<long>("Stock")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductOption");
+                });
+
             modelBuilder.Entity("GazeManager.Models.ProductOrder", b =>
                 {
                     b.Property<long>("Id")
@@ -285,20 +397,32 @@ namespace GazeManager.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("DECIMAL(18, 2)");
+
+                    b.Property<long>("OptionId")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("OrderId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("DECIMAL(18, 2)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<int>("Size")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OptionId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("ProductOrder");
                 });
@@ -336,16 +460,41 @@ namespace GazeManager.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("GazeManager.Models.Cart", b =>
+            modelBuilder.Entity("GazeManager.Models.Wishlist", b =>
                 {
-                    b.HasOne("GazeManager.Models.Product", "Product")
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Wishlist");
+                });
+
+            modelBuilder.Entity("GazeManager.Models.CartItem", b =>
+                {
+                    b.HasOne("GazeManager.Models.ProductOption", "Option")
                         .WithMany()
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("OptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("GazeManager.Models.User", "User")
-                        .WithMany("CartList")
+                        .WithMany("Cart")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -354,7 +503,14 @@ namespace GazeManager.Migrations
             modelBuilder.Entity("GazeManager.Models.DeviceInfo", b =>
                 {
                     b.HasOne("GazeManager.Models.User", "User")
-                        .WithMany("DeviceInfos")
+                        .WithMany("Devices")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("GazeManager.Models.Notification", b =>
+                {
+                    b.HasOne("GazeManager.Models.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId");
                 });
 
@@ -391,17 +547,41 @@ namespace GazeManager.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("GazeManager.Models.ProductOption", b =>
+                {
+                    b.HasOne("GazeManager.Models.Product", "Product")
+                        .WithMany("ProductOptions")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("GazeManager.Models.ProductOrder", b =>
                 {
-                    b.HasOne("GazeManager.Models.Order", "Order")
-                        .WithMany("ProductOrders")
-                        .HasForeignKey("OrderId")
+                    b.HasOne("GazeManager.Models.ProductOption", "Option")
+                        .WithMany()
+                        .HasForeignKey("OptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GazeManager.Models.Order", "Order")
+                        .WithMany("Cart")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GazeManager.Models.Wishlist", b =>
+                {
                     b.HasOne("GazeManager.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GazeManager.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

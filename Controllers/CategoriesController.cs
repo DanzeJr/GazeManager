@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GazeManager.Models;
+using GazeManager.Models.Requests;
+using GazeManager.Models.Responses;
 using GazeManager.Services;
 
 namespace GazeManager.Controllers
@@ -24,13 +26,13 @@ namespace GazeManager.Controllers
 
         // GET: api/Categories
         [HttpGet]
-        public async Task<IActionResult> GetCategory(int pageIndex = -1, int pageSize = -1)
+        public async Task<IActionResult> GetCategory([FromQuery] BaseFilter request = null)
         {
             List<Category> categories;
-            if (pageIndex >= 0 && pageSize > 0)
+            if (request?.PageIndex > 0 && request.PageSize > 0)
             {
                 int totalPages = await _context.Category.CountAsync();
-                categories = await _context.Category.Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToListAsync();
+                categories = await _context.Category.Skip(request.PageSize.Value * (request.PageIndex.Value - 1)).Take(request.PageSize.Value).ToListAsync();
                 return Ok(new Pagination<Category>
                 {
                     TotalPages = totalPages,
@@ -46,7 +48,10 @@ namespace GazeManager.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(long id)
         {
-            var category = await _context.Category.FindAsync(id);
+            var category = await _context.Category
+                .Include(x => x.ProductCategories)
+                .ThenInclude(pc => pc.Product)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (category == null)
             {

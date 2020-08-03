@@ -74,6 +74,22 @@ namespace GazeManager.Controllers
             return NoContent();
         }
 
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> RemoveFromUser(string id)
+        {
+            var device = await _context.DeviceInfo.FirstOrDefaultAsync(x => x.InstanceId == id);
+            if (device == null)
+            {
+                return BadRequest();
+            }
+
+            device.Status = 0;
+            _context.DeviceInfo.Update(device);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
         // POST: api/Devices
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -82,14 +98,22 @@ namespace GazeManager.Controllers
         {
             deviceInfo.CreatedDate = DateTime.Now;
             deviceInfo.LastUpdate = DateTime.Now;
+            deviceInfo.Status = 0;
             var id = User?.Claims?.FirstOrDefault(x => x.Type == "gazeId")?.Value;
             if (id != null)
             {
                 deviceInfo.UserId = long.Parse(id);
-                var userDevice = await _context.DeviceInfo.Where(x => x.UserId == deviceInfo.UserId).OrderByDescending(x => x.CreatedDate).FirstOrDefaultAsync();
-                if (deviceInfo.InstanceId.Equals(userDevice.InstanceId))
+                var device = await _context.DeviceInfo.Where(x => x.InstanceId == deviceInfo.InstanceId && (x.UserId == null || x.UserId == long.Parse(id)))
+                    .OrderByDescending(x => x.CreatedDate).FirstOrDefaultAsync();
+                if (device != null)
                 {
-                    deviceInfo.CreatedDate = userDevice.CreatedDate;
+                    device.Status = 1;
+                    device.UserId = deviceInfo.UserId;
+                    device.AppVersion = deviceInfo.AppVersion;
+                    device.Device = deviceInfo.Device;
+                    device.OsVersion = deviceInfo.OsVersion;
+                    device.RegId = deviceInfo.RegId;
+                    device.LastUpdate = DateTime.Now;
                     _context.DeviceInfo.Update(deviceInfo);
                     await _context.SaveChangesAsync();
 
